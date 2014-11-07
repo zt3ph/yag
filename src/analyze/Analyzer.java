@@ -46,32 +46,45 @@ public class Analyzer {
             public boolean visit(MethodInvocation node) {
 
                 String functionName = node.getName().toString().toLowerCase();
-
-                if (functionName.contains("query")
-                        || functionName.contains("exec")
-                        || functionName.contains("write")
-                        || functionName.contains("open")
-                        || functionName.contains("read")
-                        || functionName.contains("send")
-                        || functionName.contains("xml")
-                        || functionName.contains("xpath")
-                        || functionName.contains("shell")
-                        || functionName.contains("file")
-                        || functionName.contains("stream")
-                        || functionName.contains("reciev")) {
-
-                    if (totInf.get("FUNC") == null) {
-                        totInf.put("FUNC", new TreeMap<String, Map<String, List<Tuple<Integer, Integer>>>>());
-                    }
-                    if (totInf.get("FUNC").get(node.getName().toString()) == null) {
-                        totInf.get("FUNC").put(node.getName().toString(), new TreeMap<String, List<Tuple<Integer, Integer>>>());
-                    }
-                    if (totInf.get("FUNC").get(node.getName().toString()).get(filename) == null) {
-                        totInf.get("FUNC").get(node.getName().toString()).put(filename, new ArrayList());
-                    }
-                    totInf.get("FUNC").get(node.getName().toString()).get(filename).add(new Tuple(cu.getLineNumber(node.getStartPosition()), cu.getColumnNumber(node.getStartPosition())));
-
+                String dName = "";
+                if (functionName.contains("query")) {
+                    dName = "query";
+                } else if (functionName.contains("exec")) {
+                    dName = "exec";
+                } else if (functionName.contains("xml")) {
+                    dName = "xml";
+                } else if (functionName.contains("xpath")) {
+                    dName = "xpath";
+                } else if (functionName.contains("shell")) {
+                    dName = "shell";
+                } else if (functionName.contains("open")) {
+                    dName = "open";
+                } else if (functionName.contains("write")) {
+                    dName = "write";
+                } else if (functionName.contains("read")) {
+                    dName = "read";
+                } else if (functionName.contains("file")) {
+                    dName = "file";
+                } else if (functionName.contains("stream")) {
+                    dName = "stream";
+                } else if (functionName.contains("reciev")) {
+                    dName = "reciev";
+                } else if (functionName.contains("send")) {
+                    dName = "send";
+                } else {
+                    return true;
                 }
+
+                if (totInf.get(dName) == null) {
+                    totInf.put(dName, new TreeMap<String, Map<String, List<Tuple<Integer, Integer>>>>());
+                }
+                if (totInf.get(dName).get(node.getName().toString()) == null) {
+                    totInf.get(dName).put(node.getName().toString(), new TreeMap<String, List<Tuple<Integer, Integer>>>());
+                }
+                if (totInf.get(dName).get(node.getName().toString()).get(filename) == null) {
+                    totInf.get(dName).get(node.getName().toString()).put(filename, new ArrayList());
+                }
+                totInf.get(dName).get(node.getName().toString()).get(filename).add(new Tuple(cu.getLineNumber(node.getStartPosition()), cu.getColumnNumber(node.getStartPosition())));
 
                 return true;
             }
